@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>am i funny fr</title>
+
+<style>
+body {
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+  padding: 26px 16px 140px;
+  overflow-x: hidden;
+}
+
+h1 { font-weight: 900; }
+p { opacity: 0.9; }
+
+img {
+  width: 260px;
+  max-width: 92%;
+  border-radius: 16px;
+  margin: 14px 0;
+  box-shadow: 0 0 35px rgba(255,255,255,0.15);
+  transition: transform 0.15s ease;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+button {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.25s ease, opacity 0.25s ease, left 0.2s ease, top 0.2s ease;
+  position: relative;
+}
+
+#yesBtn {
+  background: white;
+  color: black;
+  font-weight: 900;
+}
+
+#noBtn {
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+}
+
+#roast {
+  margin-top: 8px;
+  font-size: 15px;
+  color: #ff9f9f;
+  min-height: 22px;
+  transition: color 0.2s ease;
+}
+
+#stats {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+#ending {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffdede;
+}
+
+#hint {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.4;
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="question">am i actually funny</h1>
+<p id="subtitle">no pressure. lying is allowed.</p>
+
+<img id="gif" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
+
+<div class="buttons">
+  <button id="yesBtn">yes fr</button>
+  <button id="noBtn">fuh nahh</button>
+</div>
+
+<div id="roast"></div>
+<div id="stats"></div>
+<div id="ending"></div>
+<div id="hint">type "sigma" or "roastme"</div>
+
+<!-- SOUND EFFECTS -->
+<audio id="boom" src="https://www.myinstants.com/media/sounds/vine-boom.mp3"></audio>
+<audio id="sad" src="https://www.myinstants.com/media/sounds/sad-violin.mp3"></audio>
+<audio id="evil" src="https://www.myinstants.com/media/sounds/evil-laugh.mp3"></audio>
+<audio id="win" src="https://www.myinstants.com/media/sounds/anime-wow.mp3"></audio>
+
+<script>
+let noClicks = 0;
+let roastMode = false;
+
+let yesVotes = parseInt(localStorage.getItem("yesVotes") || "0");
+let noVotes = parseInt(localStorage.getItem("noVotes") || "0");
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const gif = document.getElementById("gif");
+
+const question = document.getElementById("question");
+const subtitle = document.getElementById("subtitle");
+const roast = document.getElementById("roast");
+const stats = document.getElementById("stats");
+const ending = document.getElementById("ending");
+
+const boom = document.getElementById("boom");
+const sad = document.getElementById("sad");
+const evil = document.getElementById("evil");
+const win = document.getElementById("win");
+
+const lines = [
+  "wow. crazy take.",
+  "that kinda hurt ngl.",
+  "npc behavior detected.",
+  "villain arc unlocked.",
+  "ur opinion is suspicious.",
+  "bro stop clicking fuh nahh.",
+  "this friendship is collapsing.",
+  "emotional damage critical.",
+  "u are officially my opp.",
+  "i will remember this forever."
+];
+
+const gifs = [
+  "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+  "https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif",
+  "https://media.giphy.com/media/l41YpZQ1Yk8YpBeDm/giphy.gif",
+  "https://media.giphy.com/media/ROF8OQvDmxytW/giphy.gif",
+  "https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif",
+  "https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif",
+  "https://media.giphy.com/media/d2lcHJTG5Tscg/giphy.gif",
+  "https://media.giphy.com/media/j5QcmXoFWv3rC/giphy.gif",
+  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
+  "https://media.giphy.com/media/13AXYJh2jDt2IE/giphy.gif"
+];
+
+const normalRoasts = [
+  "wifi signal type opinion.",
+  "ur humor buffering.",
+  "npc energy confirmed.",
+  "u clap when planes land.",
+  "L take certified.",
+  "this why ur group chat ignores u.",
+  "ur taste needs a patch update.",
+  "mentally lagging fr."
+];
+
+const savageRoasts = [
+  "ur humor runs on trial version.",
+  "u laugh at ur own jokes fr.",
+  "even autocorrect hates that take.",
+  "brain buffering at 2%.",
+  "comedy skill issue detected.",
+  "bro got DLC humor but didn’t install it.",
+  "this why nobody gives u aux."
+];
+
+const endings = [
+  "",
+  "",
+  "NPC ENDING 🧍",
+  "CLOWN ENDING 🤡",
+  "VILLAIN ENDING 🦹",
+  "SIGMA ENDING 🗿",
+  "FINAL BOSS HATER 💀",
+  "FINAL ROAST GOD 🔥"
+];
+
+const happyGif = "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
+
+function updateStats() {
+  const total = yesVotes + noVotes;
+  const percent = total ? Math.round((yesVotes / total) * 100) : 50;
+  stats.textContent = `approval rating: ${percent}% (trust me bro) | real ones: ${yesVotes} | haters: ${noVotes}`;
+}
+updateStats();
+
+function screenShake() {
+  document.body.style.transform = "translateX(6px)";
+  setTimeout(() => document.body.style.transform = "translateX(-6px)", 60);
+  setTimeout(() => document.body.style.transform = "translateX(0)", 120);
+}
+
+// NAH RUN AWAY
+noBtn.addEventListener("mouseenter", () => {
+  if (noClicks > 2) {
+    noBtn.style.left = (Math.random() * 120 - 60) + "px";
+    noBtn.style.top = (Math.random() * 60 - 30) + "px";
+  }
+});
+
+noBtn.addEventListener("click", () => {
+  noClicks++;
+  noVotes++;
+  localStorage.setItem("noVotes", noVotes);
+
+  boom.currentTime = 0;
+  boom.play();
+  screenShake();
+  navigator.vibrate?.(80);
+
+  yesBtn.style.transform = `scale(${1 + noClicks * 0.14})`;
+
+  let shrink = Math.max(0, 1 - noClicks * 0.14);
+  noBtn.style.transform = `scale(${shrink})`;
+  noBtn.style.opacity = shrink;
+
+  question.textContent = lines[Math.min(noClicks, lines.length - 1)];
+  gif.src = gifs[Math.min(noClicks, gifs.length - 1)];
+
+  if (noClicks >= 6) {
+    roastMode = true;
+    roast.style.color = "#ff4b4b";
+    evil.currentTime = 0;
+    evil.play();
+  }
+
+  const roastPool = roastMode ? savageRoasts : normalRoasts;
+  roast.textContent = roastPool[Math.floor(Math.random() * roastPool.length)];
+
+  ending.textContent = endings[Math.min(noClicks, endings.length - 1)];
+  subtitle.textContent = "u can still redeem urself btw.";
+
+  if (noClicks === 5) {
+    sad.currentTime = 0;
+    sad.play();
+  }
+
+  if (noClicks >= 9) {
+    subtitle.textContent = "ok stop. emotional damage maxed.";
+    noBtn.disabled = true;
+  }
+
+  updateStats();
+});
+
+// YES CLICK
+yesBtn.addEventListener("click", () => {
+  yesVotes++;
+  localStorage.setItem("yesVotes", yesVotes);
+
+  win.currentTime = 0;
+  win.play();
+
+  question.textContent = "W take. u officially a real one.";
+  subtitle.textContent = "friendship upgraded. elite status unlocked.";
+  gif.src = happyGif;
+  roast.textContent = "immaculate taste. zero Ls.";
+  ending.textContent = "REAL ONE CERTIFIED 🏆🔥";
+
+  noBtn.style.display = "none";
+  yesBtn.style.transform = "scale(1.25)";
+
+  updateStats();
+});
+
+// SECRET CHEAT CODES
+let typed = "";
+document.addEventListener("keydown", (e) => {
+  typed += e.key.toLowerCase();
+
+  if (typed.includes("sigma")) {
+    ending.textContent = "SECRET SIGMA ENDING 🗿🔥";
+    roast.textContent = "bro unlocked hidden aura.";
+    gif.src = "https://media.giphy.com/media/l0HlHFRbmaZtBRhXG/giphy.gif";
+  }
+
+  if (typed.includes("roastme")) {
+    roastMode = true;
+    roast.style.color = "#ff2a2a";
+    ending.textContent = "SECRET ROAST MODE ACTIVATED 🔥💀";
+    roast.textContent = savageRoasts[Math.floor(Math.random() * savageRoasts.length)];
+    evil.currentTime = 0;
+    evil.play();
+  }
+});
+</script>
+
+</body>
+</html>
